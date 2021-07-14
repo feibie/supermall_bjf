@@ -30,10 +30,10 @@ export default {
   },
   methods: {
     itemClick(index) {
-      this.currentIndex = index
-      // this.$emit("changeType",this.currentIndex)
-    }
-  }
+      this.currentIndex = index;
+      this.$emit("tabItemClick", this.currentIndex);
+    },
+  },
 };
 </script>
 
@@ -48,7 +48,7 @@ export default {
 .tab-control-item {
   flex: 1;
 }
-.tab-control-item  span{
+.tab-control-item span {
   padding: 5px;
 }
 .active span {
