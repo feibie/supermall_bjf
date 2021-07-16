@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
 import GoodsListItem from "./GoodsListItem"
 export default {
   name:"GoodsList",

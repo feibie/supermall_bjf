@@ -37,21 +37,19 @@ import NavBar from "components/common/navbar/NavBar";
 import Scroll from "components/common/scroll/Scroll";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
-import BackTop from "components/content/backTop/BackTop";
 
 import HomeSwiper from "./childComponts/HomeSwiper";
 import RecommendView from "./childComponts/RecommendView";
 import FeatureView from "./childComponts/FeatureView";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-import { debounce } from "common/utils";
+import { itemListenerMixin, backTopMixin } from "common/mixin";
 
 export default {
   name: "Home",
   components: {
     NavBar,
     Scroll,
-    BackTop,
     TabControl,
     GoodsList,
     HomeSwiper,
@@ -68,12 +66,13 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
+
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
     };
   },
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     // 请求多个数据（轮播图等）
     this.getHomeMultidata();
@@ -83,18 +82,24 @@ export default {
     this.getHomeGoods("sell");
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 500);
-    // 监听item中图片加载完成
-    this.$bus.$on("itemImageLoad", () => {
-      refresh();
-    });
+    // 这里的内容与Detail.vue里面的内容重复，已加入混入的js里面，减少代码量
+    // const refresh = debounce(this.$refs.scroll.refresh, 500);
+    // // 监听item中图片加载完成
+    // // 对监听的事件进行保存
+    // this.homeItemListener = () => {
+    //   refresh();
+    // };
+    // this.$bus.$on("itemImageLoad", this.itemImgListener);
   },
   activated() {
     this.$refs.scroll.scrollTo(0, this.saveY, 0);
     this.$refs.scroll.refresh();
   },
   deactivated() {
+    // 保存Y值
     this.saveY = this.$refs.scroll.getScrollY();
+    // 取消全局事件的监听
+    this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
   methods: {
     // 网络请求相关
@@ -124,9 +129,7 @@ export default {
       this.$refs.tabControl1.currentIndex = currentIndex;
       this.$refs.tabControl2.currentIndex = currentIndex;
     },
-    backTopClick() {
-      this.$refs.scroll.scrollTo(0, 0);
-    },
+
     contentScroll(position) {
       // 判断BackTop的显示
       this.isShowBackTop = -position.y > 1000;
