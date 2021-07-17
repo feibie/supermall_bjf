@@ -18,6 +18,7 @@
     </scroll>
     <detail-bottom-bar @addCart="addToCart" />
     <back-top @click.native="backTopClick" v-show="isShowBackTop" />
+    <toast class="toast" :message="message" :show="show" />
   </div>
 </template>
 
@@ -33,6 +34,7 @@ import DetailBottomBar from "./childComponts/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
+import Toast from "components/common/toast/Toast";
 
 import { itemListenerMixin, backTopMixin } from "common/mixin";
 import { debounce } from "common/utils";
@@ -44,6 +46,8 @@ import {
   Shop,
   GoodsParam,
 } from "network/detail";
+
+import { mapActions } from "vuex";
 export default {
   name: "Detail",
   data() {
@@ -59,6 +63,8 @@ export default {
       themeTopYs: [],
       getThemeTopY: null,
       currentIndex: 0,
+      message: "",
+      show: false,
     };
   },
   mixins: [itemListenerMixin, backTopMixin],
@@ -73,6 +79,7 @@ export default {
     DetailBottomBar,
     Scroll,
     GoodsList,
+    Toast,
   },
   created() {
     this.getGoodsDetail();
@@ -92,6 +99,7 @@ export default {
     this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
   methods: {
+    ...mapActions(["addCart"]),
     getGoodsDetail() {
       // this.$route.params.xxx
       this.iid = this.$route.params.id;
@@ -163,7 +171,21 @@ export default {
       produce.iid = this.iid;
 
       // 将商品添加到购物车
-      this.$store.commit("addCart",produce)
+      // // this.$store.dispatch("addCart",produce)
+      // this.$store.dispatch("addCart", produce).then((res) => {
+      //   console.log(res);
+      // });
+
+      // 通过 mapActions 映射 addCart 可以直接 this.addCart使用
+      this.addCart(produce).then((res) => {
+        console.log(res);
+        this.message = res;
+        this.show = true;
+        setTimeout(() => {
+          this.show = false;
+          this.message = "";
+        }, 1500);
+      });
     },
   },
 };
@@ -183,4 +205,5 @@ export default {
 .detail-scroll {
   height: calc(100vh - 102px);
 }
+
 </style>

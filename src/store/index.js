@@ -3,22 +3,18 @@ import Vuex from "vuex"
 
 Vue.use(Vuex)
 
+import mutations from "./mutations"
+import actions from "./actions"
+import getters from "./getters"
+const state = {
+  cartList: []
+}
+
 const store = new Vuex.Store({
-  state: {
-    cartList: []
-  },
-  mutations: {
-    addCart(state, payload) {
-      let oldProduce = state.cartList.find(item => item.iid === payload.iid)
-      console.log(oldProduce)
-      if (!oldProduce) {
-        payload.count = 1
-        state.cartList.push(payload)
-      } else {
-        oldProduce.count += 1
-      }
-    }
-  }
+  state,
+  getters,
+  mutations,
+  actions
 })
 
 // 挂载到Vue实例上
