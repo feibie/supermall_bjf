@@ -7,7 +7,9 @@
     ></CheckButton>
     <span>全选</span>
     <span class="total-price">合计: ¥{{ totalPrice }}</span>
-    <span class="buy-product">去计算({{ checkLength }})</span>
+    <span class="buy-product" @click="calcClick"
+      >去计算({{ checkLength }})</span
+    >
   </div>
 </template>
 
@@ -36,9 +38,14 @@ export default {
       return this.cartList.filter((item) => item.checked).length;
     },
     isSelectAll() {
-      return this.cartList.every((item) => {
-        return item.checked;
-      });
+      if (this.cartList.length === 0) {
+        return false;
+      } else {
+        return this.cartList.every((item) => {
+          console.log(item.checked);
+          return item.checked;
+        });
+      }
     },
   },
   methods: {
@@ -51,6 +58,11 @@ export default {
         this.cartList.forEach((item) => {
           item.checked = true;
         });
+      }
+    },
+    calcClick() {
+      if (!this.isSelectAll) {
+        this.$toast.show("请选择购买的商品");
       }
     },
   },

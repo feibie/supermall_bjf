@@ -18,7 +18,7 @@
     </scroll>
     <detail-bottom-bar @addCart="addToCart" />
     <back-top @click.native="backTopClick" v-show="isShowBackTop" />
-    <toast class="toast" :message="message" :show="show" />
+    <!-- <toast class="toast" :message="message" :show="show" /> -->
   </div>
 </template>
 
@@ -34,7 +34,7 @@ import DetailBottomBar from "./childComponts/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
-import Toast from "components/common/toast/Toast";
+// import Toast from "components/common/toast/Toast";
 
 import { itemListenerMixin, backTopMixin } from "common/mixin";
 import { debounce } from "common/utils";
@@ -79,7 +79,7 @@ export default {
     DetailBottomBar,
     Scroll,
     GoodsList,
-    Toast,
+    // Toast,
   },
   created() {
     this.getGoodsDetail();
@@ -178,13 +178,14 @@ export default {
 
       // 通过 mapActions 映射 addCart 可以直接 this.addCart使用
       this.addCart(produce).then((res) => {
-        console.log(res);
-        this.message = res;
-        this.show = true;
-        setTimeout(() => {
-          this.show = false;
-          this.message = "";
-        }, 1500);
+        // console.log(res);
+        // this.message = res;
+        // this.show = true;
+        // setTimeout(() => {
+        //   this.show = false;
+        //   this.message = "";
+        // }, 1500);
+        this.$toast.show(res)
       });
     },
   },
